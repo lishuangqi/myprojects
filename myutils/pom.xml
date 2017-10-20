@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lishuangqi</groupId>
-        <artifactId>projects</artifactId>
+        <artifactId>myprojects</artifactId>
         <version>1.0.0</version>
     </parent>
 
