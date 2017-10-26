@@ -224,7 +224,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String formatMac(String mac, String sep) {
-		if (Assert.isEmpty(mac)) {
+		if (StringUtil.isEmpty(mac)) {
 			return "";
 		}
 
@@ -272,7 +272,7 @@ public class Utils {
 	 * @return
 	 */
 	public static String nullToDefault(String str, String def) {
-		return Assert.isEmpty(str) ? def : str;
+		return StringUtil.isEmpty(str) ? def : str;
 	}
 
 	/**
