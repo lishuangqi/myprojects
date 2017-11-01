@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="300" />
+        <property name="maxTotal" value="600" />
+        <property name="maxWaitMillis" value="100000"></property>
+        <property name="testOnBorrow" value="true" />
+    </bean>
+    <bean id="reidsNodesConfig" class="org.springframework.core.env.MapPropertySource">
+        <constructor-arg index="0" value="myMap" ></constructor-arg>
+        <constructor-arg index="1" >
+            <map>
+                <entry key="spring.redis.sentinel.master" value="redismaster"></entry>
+                <entry key="spring.redis.sentinel.nodes" value="${redis.cluster.host}"></entry>
+            </map>
+        </constructor-arg>
+    </bean>
+    <bean id="redisSentinelConfiguration" class="org.springframework.data.redis.connection.RedisSentinelConfiguration" >
+        <!-- <property name="master" ref="myMaster"></property>-->
+        <constructor-arg name="propertySource" ref="reidsNodesConfig" ></constructor-arg>
+    </bean>
+    <bean id="jedisConnFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"  >
+        <constructor-arg index="0" ref="redisSentinelConfiguration" />
+        <property name="password" value="${redis.password}" />
+        <property name="timeout" value="1000" />
+        <constructor-arg index="1" ref="poolConfig" />
+    </bean>
+    <bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+        <property name="connectionFactory" ref="jedisConnFactory" />
+    </bean>
+
+</beans>

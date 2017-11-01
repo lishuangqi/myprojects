@@ -38,6 +38,7 @@
 	</build>
 	<modules>
 		<module>myutils</module>
+		<module>springmvc-test</module>
 	</modules>
 	<dependencies>
 		<dependency>
