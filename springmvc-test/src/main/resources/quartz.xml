@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd"
+>
+
+    <bean id="clearDataTask" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <bean p:targetObject-ref="myTestService" p:targetMethod="executeClearData" p:concurrent="false" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" />
+        </property>
+        <property name="cronExpression" value="0 0/1 * * * ?" />
+    </bean>
+
+    <!-- 配置调度器 在startQuartz中用到SchedulerFactoryBeanWithShutdownDelay是因为当Tomcat被关闭时，有可能导致任务线程并未完全关闭，导致内存泄漏。-->
+    <bean name="startQuertz" lazy-init="false" autowire="no" destroy-method="destroy"
+          class="com.lishuangqi.common.SchedulerFactoryBeanWithShutdownDelay" >
+        <property name="quartzProperties">
+            <props>
+                <prop key="org.quartz.threadPool.threadCount">3</prop>
+                <!-- 检测更新给禁用掉 -->
+                <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
+            </props>
+        </property>
+        <property name="waitForJobsToCompleteOnShutdown">
+            <value>false</value>
+        </property>
+        <property name="triggers">
+            <list>
+                <ref bean="clearDataTask" />
+            </list>
+        </property>
+        <property name="autoStartup" value="true" />
+        <property name="startupDelay" value="10" />
+    </bean>
+</beans>

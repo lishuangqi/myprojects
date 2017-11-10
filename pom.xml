@@ -39,7 +39,8 @@
 	<modules>
 		<module>myutils</module>
 		<module>springmvc-test</module>
-	</modules>
+        <module>sentiment-analysis</module>
+    </modules>
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>

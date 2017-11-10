@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/rabbit
+     	   http://www.springframework.org/schema/rabbit/spring-rabbit.xsd"
+>
+    <rabbit:connection-factory id="connectionFactory" host="${mq.host}" username="${mq.username}"
+        password="${mq.passoword}" port="${mq.port}"/>
+  
+<rabbit:template id="amqpTemplate" connection-factory="connectionFactory"  
+    exchange="myTestExchange" routing-key="myTest.shuangqi"/>
+  
+<rabbit:admin connection-factory="connectionFactory" />  
+  
+<rabbit:queue name="myTestQueue" durable="true" auto-delete="false" exclusive="false"/>
+<!--路由设置 将队列绑定，属于topic类型-->  
+<rabbit:topic-exchange name="myTestExchange">
+    <rabbit:bindings>  
+        <rabbit:binding queue="myTestQueue" pattern="myTest.*" />
+    </rabbit:bindings>  
+</rabbit:topic-exchange>
+
+<!-- 监听类设置-->   
+<rabbit:listener-container connection-factory="connectionFactory">
+    <rabbit:listener ref="dataProcessor" queue-names="myTestQueue" />
+</rabbit:listener-container>  
+  
+<bean id="dataProcessor" class="com.lishuangqi.resolver.DataProcessor" />
+</beans> 

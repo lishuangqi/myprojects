@@ -4,16 +4,16 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/context
-                        http://www.springframework.org/schema/context/spring-context-4.3.xsd
+                        http://www.springframework.org/schema/context/spring-context.xsd
                         http://www.springframework.org/schema/mvc
                         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     <!--启用spring的一些annotation -->
     <context:annotation-config/>
 
     <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
-    <context:component-scan base-package="com.lishuangqi.controller">
+    <context:component-scan base-package="com.lishuangqi.controller,com.lishuangqi.service">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
@@ -79,4 +79,6 @@
         <!--<constructor-arg name="client" ref="client"/>-->
     <!--</bean>-->
     <import resource="classpath*:elasticseach.xml" />
+    <import resource="classpath*:quartz.xml" />
+    <import resource="classpath*:rabbitmq.xml" />
 </beans>
