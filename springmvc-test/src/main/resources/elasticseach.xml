@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:elasticsearch="http://www.springframework.org/schema/data/elasticsearch"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                         http://www.springframework.org/schema/data/elasticsearch
+                         http://www.springframework.org/schema/data/elasticsearch/spring-elasticsearch.xsd">
+    <!--启用spring的一些annotation -->
+
+    <!-- 远程机器 -->
+    <elasticsearch:transport-client id="client" cluster-name="elasticsearch"
+                                    cluster-nodes="192.168.100.57:9300"
+                                    client-transport-sniff="false"/>
+    <elasticsearch:repositories base-package="com.lishuangqi.service.elasticsearch.repository"
+                                elasticsearch-template-ref="elasticsearchTemplate"/>
+    <bean name="elasticsearchTemplate"
+          class="org.springframework.data.elasticsearch.core.ElasticsearchTemplate">
+        <constructor-arg name="client" ref="client"/>
+    </bean>
+</beans>

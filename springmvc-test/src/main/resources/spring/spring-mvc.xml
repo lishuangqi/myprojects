@@ -4,9 +4,9 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-                         http://www.springframework.org/schema/context
-                        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-4.3.xsd
                         http://www.springframework.org/schema/mvc
                         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     <!--启用spring的一些annotation -->
@@ -68,4 +68,15 @@
         <!-- 内存中的最大值 -->
         <property name="maxInMemorySize" value="4096"/>
     </bean>
+
+    <!--<elasticsearch:transport-client id="client" cluster-name="elasticsearch"-->
+                                    <!--cluster-nodes="192.168.100.57:9300"-->
+                                    <!--client-transport-sniff="false"/>-->
+    <!--<elasticsearch:repositories base-package="com.lishuangqi.service.elasticsearch.repository"-->
+                                <!--elasticsearch-template-ref="elasticsearchTemplate"/>-->
+    <!--<bean name="elasticsearchTemplate"-->
+          <!--class="org.springframework.data.elasticsearch.core.ElasticsearchTemplate">-->
+        <!--<constructor-arg name="client" ref="client"/>-->
+    <!--</bean>-->
+    <import resource="classpath*:elasticseach.xml" />
 </beans>
