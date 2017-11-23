@@ -206,6 +206,16 @@
             <artifactId>quartz</artifactId>
             <version>2.2.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.lishuangqi</groupId>
+            <artifactId>myutils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>2.6.11</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>springmvc-test</finalName>

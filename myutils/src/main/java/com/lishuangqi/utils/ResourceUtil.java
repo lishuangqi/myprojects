@@ -3,6 +3,8 @@ package com.lishuangqi.utils;
 /**
  * Created by michael on 2017/10/20.
  */
+import org.springframework.util.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,17 +52,29 @@ public class ResourceUtil {
                 }
 
 //                if(stream == null) {
-//                    try {
-//                        URL e2 = ResourceUtils.getURL(path);
-//                        if(e2 != null) {
-//                            stream = e2.openStream();
+//                    String e1 = SystemEnvUtil.getSystemEnvironment("BUILD_HOME");
+//                    File f = new File(e1, path);
+//                    if(f.exists()) {
+//                        try {
+//                            stream = new FileInputStream(f);
+//                        } catch (FileNotFoundException var8) {
+//                            ;
 //                        }
-//                    } catch (FileNotFoundException var6) {
-//                        var6.printStackTrace();
-//                    } catch (IOException var7) {
-//                        var7.printStackTrace();
 //                    }
 //                }
+
+                if(stream == null) {
+                    try {
+                        URL e2 = org.springframework.util.ResourceUtils.getURL(path);
+                        if(e2 != null) {
+                            stream = e2.openStream();
+                        }
+                    } catch (FileNotFoundException var6) {
+                        var6.printStackTrace();
+                    } catch (IOException var7) {
+                        var7.printStackTrace();
+                    }
+                }
             }
 
             return (InputStream)stream;

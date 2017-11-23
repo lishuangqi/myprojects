@@ -3,6 +3,7 @@ package com.lishuangqi.service.elasticsearch.repository;
 import com.lishuangqi.service.elasticsearch.BaseSearchRepository;
 import com.lishuangqi.service.elasticsearch.repository.vo.ArticleVo;
 import org.springframework.data.elasticsearch.annotations.Query;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -29,10 +30,10 @@ public interface ArticleRepository extends BaseSearchRepository<ArticleVo, Strin
      *  @Query("{\"bool\" : {\"must\" : [ {\"term\" : {\"title\" : \"?1\"}}, {\"term\" : {\"content\" : \"?0\"}} ]}}")
      *  @Query("{bool : {must : [ {field : {title : ?}}, {field : {content : ?}} ]}}")
      */
-    @Query("{bool : {must : [ {field : {title : ?}}, {field : {content : ?}} ]}}")
+    @Query("{bool : {must : [ {term : {title : ?0}}, {term : {content : ?1}} ]}}")
     List<ArticleVo> findByTitleAndContent1(String title, String content);
 
-    @Query("{bool : {must : [{term : {title : ?}}] }}")
+    @Query("{bool : {should : [ {term : {title : ?0}} ]}}")
     List<ArticleVo> findByTitle(String title);
 
     //还有分页、排序等API

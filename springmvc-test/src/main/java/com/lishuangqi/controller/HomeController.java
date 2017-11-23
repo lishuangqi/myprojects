@@ -2,12 +2,14 @@ package com.lishuangqi.controller;
 
 import com.lishuangqi.service.elasticsearch.repository.ArticleRepository;
 import com.lishuangqi.service.elasticsearch.repository.vo.ArticleVo;
+import com.lishuangqi.utils.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,12 +47,16 @@ public class HomeController {
     public  String post(String name, String remark){
         //输出日志文件
         logger.info("the first jsp pages");
+        if(StringUtil.isEmpty(name) || StringUtil.isEmpty(remark)){
+            return "index";
+        }
         System.out.println(name);
         System.out.println(remark);
         ArticleVo articleVo = new ArticleVo();
         articleVo.setId(count++ +"");
         articleVo.setTitle(name);
         articleVo.setContent(remark);
+        articleVo.setCreatetime(new Date());
         articleRepository.save(articleVo);
 
         Iterable<ArticleVo> all = articleRepository.findAll();
@@ -61,6 +67,7 @@ public class HomeController {
             System.out.println(vo.getId());
             System.out.println(vo.getTitle());
             System.out.println(vo.getContent());
+            System.out.println(vo.getCreatetime());
         }
         //返回一个index.jsp这个视图
         return "index";
@@ -71,14 +78,18 @@ public class HomeController {
         logger.info("the first jsp pages");
         System.out.println(name);
         System.out.println(remark);
-        List<ArticleVo> byTitleAndContent = articleRepository.findByTitleAndContent(name, remark);
-//        List<ArticleVo> byTitleAndContent = articleRepository.findByTitle(name);
+        if(StringUtil.isEmpty(name)){
+            return "search";
+        }
+//        List<ArticleVo> byTitleAndContent = articleRepository.findByTitleAndContent1(name, remark);
+        List<ArticleVo> byTitleAndContent = articleRepository.findByTitle(name);
         Iterator<ArticleVo> iterator = byTitleAndContent.iterator();
         while (iterator.hasNext()){
             ArticleVo vo = iterator.next();
             System.out.println(vo.getId());
             System.out.println(vo.getTitle());
             System.out.println(vo.getContent());
+            System.out.println(vo.getCreatetime());
         }
         //返回一个index.jsp这个视图
         return "search";

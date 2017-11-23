@@ -24,7 +24,7 @@ public class SerializeObjUtil {
         return null;
     }
 
-    public static Object unserialize( byte[] bytes) {
+    public static Object deserialize( byte[] bytes) {
         ByteArrayInputStream bais = null;
         try {
             // 反序列化

@@ -6,8 +6,10 @@ import com.lishuangqi.utils.security.MD5Tools;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,7 +22,9 @@ import org.apache.http.util.EntityUtils;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class HttpPostUtil {
 
@@ -237,9 +241,90 @@ public class HttpPostUtil {
             System.out.println(sessionId);
 
             System.out.println("总共执行时间为：" + (System.currentTimeMillis() - begintime) + "毫秒");
+
+            try {
+                String e = "/wsbp/wsbpConfig/comparam/getComponentParam.json";
+                String host = "localhost";
+                short port = 8081;
+                HashMap paramMap = new HashMap();
+                paramMap.put("ctypes", "REDIS");
+                paramMap.put("proId", "");
+                String str = callHttpByPost(host, port, e, (Map)null, paramMap);
+                System.out.println("str:" + str);
+            } catch (Exception var6) {
+                var6.printStackTrace();
+            }
+
         } catch (IOException e) {
             System.out.println(e);
         }
+    }
+
+    public static String callHttpByPost(String host, int port, String url, Map<String, String> headerMap, Map<String, String> paramMap) throws IOException {
+        HttpClient httpClient = new HttpClient();
+        httpClient.getHostConfiguration().setHost(host, port, "http");
+        HttpMethod method = postMethod(url, headerMap, paramMap);
+        httpClient.executeMethod(method);
+        return method.getResponseBodyAsString();
+    }
+
+    private static HttpMethod getMethod(String url, Map<String, String> headerMap, Map<String, String> paramMap) throws IOException {
+        StringBuilder url_str = new StringBuilder();
+        url_str.append(url);
+        StringBuilder param_str = new StringBuilder();
+        if(paramMap != null && paramMap.size() > 0) {
+            Iterator get = paramMap.entrySet().iterator();
+
+            while(get.hasNext()) {
+                Map.Entry i$ = (Map.Entry)get.next();
+                param_str.append(i$ + "=" + StringUtil.defaultString((String)i$.getValue(), "") + "&");
+            }
+        }
+
+        if(param_str.lastIndexOf("&") > -1) {
+            url_str.append("?" + param_str.substring(0, param_str.lastIndexOf("&")));
+        }
+
+        GetMethod get1 = new GetMethod(url_str.toString());
+        if(headerMap != null) {
+            Iterator i$1 = headerMap.entrySet().iterator();
+
+            while(i$1.hasNext()) {
+                Map.Entry entry = (Map.Entry)i$1.next();
+                get1.setRequestHeader((String)entry.getKey(), StringUtil.defaultString((String)entry.getValue(), ""));
+            }
+        }
+
+        get1.releaseConnection();
+        return get1;
+    }
+
+    private static HttpMethod postMethod(String url, Map<String, String> headerMap, Map<String, String> paramMap) throws IOException {
+        PostMethod post = new PostMethod(url);
+        if(headerMap != null) {
+            Iterator paramArray = headerMap.entrySet().iterator();
+
+            while(paramArray.hasNext()) {
+                Map.Entry count = (Map.Entry)paramArray.next();
+                post.setRequestHeader((String)count.getKey(), StringUtil.defaultString((String)count.getValue(), ""));
+            }
+        }
+
+        if(paramMap != null && paramMap.size() > 0) {
+            NameValuePair[] var9 = new NameValuePair[paramMap.size()];
+            int var10 = 0;
+
+            for(Iterator i$ = paramMap.entrySet().iterator(); i$.hasNext(); ++var10) {
+                Map.Entry entry = (Map.Entry)i$.next();
+                NameValuePair nameValuePair = new NameValuePair((String)entry.getKey(), StringUtil.defaultString((String)entry.getValue(), ""));
+                var9[var10] = nameValuePair;
+            }
+
+            post.setRequestBody(var9);
+        }
+
+        post.releaseConnection();
+        return post;
     }
 
 }

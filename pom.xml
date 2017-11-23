@@ -39,7 +39,6 @@
 	<modules>
 		<module>myutils</module>
 		<module>springmvc-test</module>
-        <module>sentiment-analysis</module>
     </modules>
 	<dependencies>
 		<dependency>

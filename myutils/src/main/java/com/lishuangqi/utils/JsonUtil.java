@@ -1,5 +1,11 @@
 package com.lishuangqi.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.ParserConfig;
+import com.alibaba.fastjson.serializer.DoubleSerializer;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -9,6 +15,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -17,7 +25,73 @@ import java.util.*;
  * @author lishuangqi
  * @date 2014-04-04
  */
-public class JsonUtil {
+public class JsonUtil extends JSON{
+    public static SerializeConfig config = new SerializeConfig();
+    public static ParserConfig parserConfig = new ParserConfig();
+    static {
+        config.put(Date.class, new SimpleDateFormatSerializer("yyyy-MM-dd HH:mm:ss"));
+        config.put(java.sql.Date.class, new SimpleDateFormatSerializer("yyyy-MM-dd"));
+        config.put(Timestamp.class, new SimpleDateFormatSerializer("yyyy-MM-dd HH:mm:ss"));
+        config.put(Time.class, new SimpleDateFormatSerializer("HH:mm:ss"));
+        config.put(Double.class, new DoubleSerializer("0.00"));
+        config.put(Float.class, new DoubleSerializer("0.0"));
+    }
+
+    public JsonUtil() {
+    }
+
+    public static String toJsonString(Object object) {
+        return JSON.toJSONString(object, config, new SerializerFeature[0]);
+    }
+
+    public static String tojson(Object root) {
+        return toJsonString(root);
+    }
+
+    public static <T> T fromJson(String jsonString, Class<T> Clazz) {
+        return JSON.parseObject(jsonString, Clazz);
+    }
+
+//    public static List<Map<String, Object>> parseJSON2List(String jsonStr) {
+//        JSONArray jsonArr = JSONArray.fromObject(jsonStr);
+//        ArrayList list = new ArrayList();
+//        Iterator it = jsonArr.iterator();
+//
+//        while(it.hasNext()) {
+//            JSONObject json2 = (JSONObject)it.next();
+//            list.add(parseJSON2Map(json2.toString()));
+//        }
+//
+//        return list;
+//    }
+//
+//    public static Map<String, Object> parseJSON2Map(String jsonStr) {
+//        HashMap map = new HashMap();
+//        JSONObject json = JSONObject.fromObject(jsonStr);
+//        Iterator i$ = json.keySet().iterator();
+//
+//        while(true) {
+//            while(i$.hasNext()) {
+//                Object k = i$.next();
+//                Object v = json.get(k);
+//                if(v instanceof JSONArray) {
+//                    ArrayList list = new ArrayList();
+//                    Iterator it = ((JSONArray)v).iterator();
+//
+//                    while(it.hasNext()) {
+//                        JSONObject json2 = (JSONObject)it.next();
+//                        list.add(parseJSON2Map(json2.toString()));
+//                    }
+//
+//                    map.put(k.toString(), list);
+//                } else {
+//                    map.put(k.toString(), v);
+//                }
+//            }
+//
+//            return map;
+//        }
+//    }
 
     /**
      *
