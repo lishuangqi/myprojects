@@ -47,7 +47,6 @@
 	<modules>
 		<module>myutils</module>
 		<module>springmvc-test</module>
-        <module>ysktest</module>
     </modules>
 	<dependencies>
 		<dependency>
