@@ -12,7 +12,15 @@
 		<java.target.version>1.7</java.target.version>
 		<wsbp.version>1.0.0-SNAPSHOT</wsbp.version>
 	</properties>
-	
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.10.RELEASE</version>
+		<!--<version>1.5.4.RELEASE</version>-->
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -39,6 +47,7 @@
 	<modules>
 		<module>myutils</module>
 		<module>springmvc-test</module>
+        <module>ysktest</module>
     </modules>
 	<dependencies>
 		<dependency>
