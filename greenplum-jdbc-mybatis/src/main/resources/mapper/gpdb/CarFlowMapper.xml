@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lishuangqi.gpdb.dao.CarFlowDao">
+	<resultMap id="BaseResultMap" type="com.lishuangqi.gpdb.domain.CarFlow">
+		<result column="clxxbh" property="clxxbh" />
+		<result column="kkbh" property="kkbh" />
+		<result column="jgsk" property="jgsk" />
+		<result column="hphm" property="hphm" />
+	</resultMap>
+
+	<parameterMap id="QcsVDjygcMaster" type="org.spring.springboot.domain.QcsVDjygcMaster"/>
+
+	<sql id="Base_Column_List">
+		clxxbh,kkbh,jgsk,hphm
+	</sql>
+
+	<select id="findByMaxClxxbh" parameterType="java.util.Map" resultType="java.lang.Long">
+		select NVL(max(clxxbh), 0) clxxbh from qcs_v_djygc
+	</select>
+
+	<select id="findByGreaterClxxbh" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+			from qcs_v_djygc
+			WHERE  jgsk>=sysdate-1 and clxxbh > #{clxxbh} AND rownum &lt;= 100
+	</select>
+
+	<insert id="insertSelective" parameterType="java.util.Map">
+		insert into qcs_v_djygc
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="clxxbh != null">clxxbh,</if>
+			<if test="kkbh != null">kkbh,</if>
+			<if test="jgsk != null">jgsk,</if>
+			<if test="hphm != null">hphm,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="clxxbh != null">#{clxxbh,jdbcType=BIGINT},</if>
+			<if test="kkbh != null">#{kkbh,jdbcType=VARCHAR},</if>
+			<if test="jgsk != null">#{jgsk,jdbcType=TIMESTAMP},</if>
+			<if test="hphm != null">#{hphm,jdbcType=VARCHAR},</if>
+
+		</trim>
+	</insert>
+
+	<!--月 省排行-->
+	<select id="countProvinceByMonth" parameterType="java.util.Map" resultMap="java.util.Map">
+		SELECT SUBSTR(t1.HPHM, 1, 1) hphm,  count(1) countVal,to_char(JGSK, 'yyyy-mm') cout_date from QCS_V_DJYGC t1
+			WHERE not exists(SELECT 1 FROM QCS_V_DJYGC_TMP t2 WHERE t1.HPHM=t2.HPHM)
+			  AND SUBSTR(t1.HPHM, 1, 1) not in('车','S','K','C','J','W','B','N','L','Z')
+			  and to_char(JGSK, 'yyyy-mm') = #{yyyy_mm}
+			GROUP BY SUBSTR(t1.HPHM, 1, 1),to_char(JGSK, 'yyyy-mm') ORDER BY cout_date Asc,countVal DESC
+	</select>
+	<!--月 四川省内排行-->
+	<select id="countSCCityByMonth" parameterType="java.util.Map" resultMap="java.util.Map">
+		SELECT tab1.hphm,tab1.countVal,CARNO.PNAME from QCS_SC_CARNO CARNO,
+		  (SELECT SUBSTR(t1.HPHM, 1, 2) hphm, count(1) countVal from QCS_V_DJYGC t1
+		  WHERE not exists(SELECT 1 FROM QCS_V_DJYGC_TMP t2 WHERE t1.HPHM=t2.HPHM)
+				AND SUBSTR(t1.HPHM, 1, 1) = '川'
+				and to_char(JGSK, 'yyyy-mm') = #{yyyy_mm}
+		  GROUP BY SUBSTR(t1.HPHM, 1, 2) ORDER BY countVal DESC) tab1 WHERE CARNO.HPBM = tab1.hphm
+	</select>
+</mapper>
