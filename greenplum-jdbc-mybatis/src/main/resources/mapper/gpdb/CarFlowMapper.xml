@@ -8,7 +8,7 @@
 		<result column="hphm" property="hphm" />
 	</resultMap>
 
-	<parameterMap id="QcsVDjygcMaster" type="org.spring.springboot.domain.QcsVDjygcMaster"/>
+	<parameterMap id="CarFlow" type="com.lishuangqi.gpdb.domain.CarFlow"/>
 
 	<sql id="Base_Column_List">
 		clxxbh,kkbh,jgsk,hphm
@@ -42,20 +42,22 @@
 	</insert>
 
 	<!--月 省排行-->
-	<select id="countProvinceByMonth" parameterType="java.util.Map" resultMap="java.util.Map">
+	<select id="countProvinceByMonth" parameterType="java.lang.String" resultType="java.util.Map">
 		SELECT SUBSTR(t1.HPHM, 1, 1) hphm,  count(1) countVal,to_char(JGSK, 'yyyy-mm') cout_date from QCS_V_DJYGC t1
 			WHERE not exists(SELECT 1 FROM QCS_V_DJYGC_TMP t2 WHERE t1.HPHM=t2.HPHM)
 			  AND SUBSTR(t1.HPHM, 1, 1) not in('车','S','K','C','J','W','B','N','L','Z')
 			  and to_char(JGSK, 'yyyy-mm') = #{yyyy_mm}
-			GROUP BY SUBSTR(t1.HPHM, 1, 1),to_char(JGSK, 'yyyy-mm') ORDER BY cout_date Asc,countVal DESC
+			GROUP BY SUBSTR(t1.HPHM, 1, 1),to_char(JGSK, 'yyyy-mm') ORDER BY countVal DESC
 	</select>
 	<!--月 四川省内排行-->
-	<select id="countSCCityByMonth" parameterType="java.util.Map" resultMap="java.util.Map">
-		SELECT tab1.hphm,tab1.countVal,CARNO.PNAME from QCS_SC_CARNO CARNO,
+	<select id="countSCCityByMonth" parameterType="java.lang.String" resultType="java.util.Map">
+		  SELECT pname, sum(countVal) countVal  from
+		  (SELECT tab1.hphm,tab1.countVal countVal,CARNO.PNAME PNAME from QCS_SC_CARNO CARNO,
 		  (SELECT SUBSTR(t1.HPHM, 1, 2) hphm, count(1) countVal from QCS_V_DJYGC t1
 		  WHERE not exists(SELECT 1 FROM QCS_V_DJYGC_TMP t2 WHERE t1.HPHM=t2.HPHM)
 				AND SUBSTR(t1.HPHM, 1, 1) = '川'
 				and to_char(JGSK, 'yyyy-mm') = #{yyyy_mm}
-		  GROUP BY SUBSTR(t1.HPHM, 1, 2) ORDER BY countVal DESC) tab1 WHERE CARNO.HPBM = tab1.hphm
+		  GROUP BY SUBSTR(t1.HPHM, 1, 2)) tab1 WHERE CARNO.HPBM = tab1.hphm  ) tab2
+		GROUP BY pname ORDER BY countVal DESC
 	</select>
 </mapper>
