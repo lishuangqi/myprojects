@@ -27,6 +27,8 @@ public interface CarFlowService {
 
     int insertSelective(CarFlow data);
 
+    int deleteByClxxbh(long clxxbh);
+
     List<Map> countProvinceByMonth(String yyyy_mm);
 
     List<Map> countSCCityByMonth(String yyyy_mm);

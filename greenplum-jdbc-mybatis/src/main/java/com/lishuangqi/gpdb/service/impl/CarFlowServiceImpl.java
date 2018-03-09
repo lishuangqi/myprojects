@@ -44,6 +44,11 @@ public class CarFlowServiceImpl implements CarFlowService {
         return carFlowDao.insertSelective(data);
     }
 
+    @Override
+    public int deleteByClxxbh(long clxxbh) {
+        return carFlowDao.deleteByClxxbh(clxxbh);
+    }
+
 
     @Override
     public List<Map> countProvinceByMonth(String yyyy_mm) {

@@ -8,7 +8,7 @@
 		<result column="hphm" property="hphm" />
 	</resultMap>
 
-	<parameterMap id="CarFlow" type="com.lishuangqi.gpdb.domain.CarFlow"/>
+	<parameterMap id="CarFlowMap" type="com.lishuangqi.gpdb.domain.CarFlow"/>
 
 	<sql id="Base_Column_List">
 		clxxbh,kkbh,jgsk,hphm
@@ -18,13 +18,17 @@
 		select NVL(max(clxxbh), 0) clxxbh from qcs_v_djygc
 	</select>
 
+	<delete id="deleteByClxxbh" parameterType="java.lang.Long" >
+		delete from qcs_v_djygc WHERE clxxbh = #{clxxbh}
+	</delete>
+
 	<select id="findByGreaterClxxbh" parameterType="java.lang.Long" resultMap="BaseResultMap">
 		select <include refid="Base_Column_List" />
 			from qcs_v_djygc
 			WHERE  jgsk>=sysdate-1 and clxxbh > #{clxxbh} AND rownum &lt;= 100
 	</select>
 
-	<insert id="insertSelective" parameterType="java.util.Map">
+	<insert id="insertSelective" parameterMap="CarFlowMap">
 		insert into qcs_v_djygc
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="clxxbh != null">clxxbh,</if>

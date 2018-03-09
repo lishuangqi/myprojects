@@ -1,5 +1,7 @@
 package com.lishuangqi.gpdb.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -10,6 +12,8 @@ public class CarFlow {
     private Integer clxxbh;//序号
     private String kkbh;//卡口编号
 //    private String kkmc;//卡口名称
+//    法1: 注解在实体字段上
+//    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date jgsk;//经过时间
 //    private Integer cdbh;//车道编号
     private String hphm;//牌号码

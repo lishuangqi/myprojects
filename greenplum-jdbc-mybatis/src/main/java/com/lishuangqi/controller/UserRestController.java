@@ -2,6 +2,7 @@ package com.lishuangqi.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.lishuangqi.gpdb.domain.CarFlow;
 import com.lishuangqi.gpdb.service.CarFlowService;
 import com.lishuangqi.gpdb.service.UserService;
 import com.lishuangqi.gpdb.domain.User;
@@ -48,5 +49,17 @@ public class UserRestController {
     public JSONArray countSCCityByMonth(@RequestParam(value = "yyyymm", required = true) String yyyymm) {
         String s1 = JSON.toJSONString(carFlowService.countSCCityByMonth(yyyymm));
         return JSONArray.parseArray(s1);
+    }
+
+    @RequestMapping(value = "/api/carflowI")
+    public int insertSelective(CarFlow carFlow) {
+            int i = carFlowService.insertSelective(carFlow);
+        return i;
+    }
+
+    @RequestMapping(value = "/api/carflowD")
+    public int insertSelective(@RequestParam(value = "id", required = true) Long clxxbh) {
+        int i = carFlowService.deleteByClxxbh(clxxbh);
+        return i;
     }
 }
