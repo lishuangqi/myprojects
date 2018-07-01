@@ -229,11 +229,14 @@
                     <target>${java.target.version}</target>
                 </configuration>
             </plugin>
-            <!--servlet容器 jetty插件-->
+            <!-- war打包插件, 设定war包名称不带版本号 -->
             <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.3.10.v20160621</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <warName>${project.artifactId}</warName>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
@@ -277,7 +280,7 @@
             </activation>
             <build>
                 <filters>
-                    <filter>src/main/resources/profiles/prod.propserties</filter>
+                    <filter>src/main/resources/profiles/prod.properties</filter>
                 </filters>
             </build>
         </profile>

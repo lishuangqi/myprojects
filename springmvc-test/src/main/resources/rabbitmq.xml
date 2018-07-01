@@ -7,9 +7,10 @@
            http://www.springframework.org/schema/rabbit
      	   http://www.springframework.org/schema/rabbit/spring-rabbit.xsd"
 >
-    <rabbit:connection-factory id="connectionFactory" host="${mq.host}" username="${mq.username}"
-                               password="${mq.passoword}" port="${mq.port}"/>
-
+    <!--<rabbit:connection-factory id="connectionFactory" host="${mq.host}" username="${mq.username}"-->
+                               <!--password="${mq.passoword}" port="${mq.port}"/>-->
+    <rabbit:connection-factory id="connectionFactory" host="192.168.100.65" username="bigdata"
+                               password="123456" port="5672"/>
     <!--rabbit 配置1-->
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
                      exchange="myTestExchange" routing-key="myTest.shuangqi"/>
@@ -45,9 +46,9 @@
     </rabbit:topic-exchange>
 
     <!-- 监听类设置-->
-    <rabbit:listener-container connection-factory="connectionFactory">
-        <rabbit:listener ref="dataProcessor" queue-names="sqsAlarmQueue"/>
+    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="none">
+        <rabbit:listener ref="alarmProcessTask" queue-names="sqsAlarmQueue"/>
     </rabbit:listener-container>
 
-    <bean id="dataProcessor" class="com.wisesoft.bigdata.controller.AlarmProcessTask"/>
+    <!--<bean id="alarmProcessTask" class="com.lishuangqi.resolver.AlarmProcessTask"/>-->
 </beans> 

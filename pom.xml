@@ -21,33 +21,34 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<source>${java.source.version}</source>
-					<target>${java.target.version}</target>
-				</configuration>
-			</plugin>
-		</plugins>
-		<resources>
-		<!-- 复制非class文件 -->		
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>				
-				<excludes>
-					<exclude>profiles/*</exclude>
-				</excludes>
-			</resource>
-		</resources>
-	</build>
+	<!--<build>-->
+		<!--<plugins>-->
+			<!--<plugin>-->
+				<!--<groupId>org.apache.maven.plugins</groupId>-->
+				<!--<artifactId>maven-compiler-plugin</artifactId>-->
+				<!--<version>2.1</version>-->
+				<!--<configuration>-->
+					<!--<source>${java.source.version}</source>-->
+					<!--<target>${java.target.version}</target>-->
+				<!--</configuration>-->
+			<!--</plugin>-->
+		<!--</plugins>-->
+		<!--<resources>-->
+		<!--&lt;!&ndash; 复制非class文件 &ndash;&gt;-->
+			<!--<resource>-->
+				<!--<directory>src/main/resources</directory>-->
+				<!--<filtering>true</filtering>-->
+				<!--<excludes>-->
+					<!--<exclude>profiles/*</exclude>-->
+				<!--</excludes>-->
+			<!--</resource>-->
+		<!--</resources>-->
+	<!--</build>-->
 	<modules>
 		<module>myutils</module>
 		<module>springmvc-test</module>
-    </modules>
+		<module>mina-sshd</module>
+	</modules>
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>

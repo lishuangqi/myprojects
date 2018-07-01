@@ -78,7 +78,7 @@
           <!--class="org.springframework.data.elasticsearch.core.ElasticsearchTemplate">-->
         <!--<constructor-arg name="client" ref="client"/>-->
     <!--</bean>-->
-    <import resource="classpath*:elasticseach.xml" />
+    <!--<import resource="classpath*:elasticseach.xml" />-->
     <import resource="classpath*:quartz.xml" />
     <import resource="classpath*:rabbitmq.xml" />
 </beans>
