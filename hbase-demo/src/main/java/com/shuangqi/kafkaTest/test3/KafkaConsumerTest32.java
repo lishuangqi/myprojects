@@ -96,7 +96,7 @@ public class KafkaConsumerTest32 implements Runnable {
         TopicPartition p = new TopicPartition(topic, partId);
         consumer.assign(Arrays.asList(p));
         //指定分区和offset进行消费
-        consumer.seek(p, 0);
+        consumer.seek(p, 1995);
         try {
             for (; ; ) {
                 msgList = consumer.poll(100);

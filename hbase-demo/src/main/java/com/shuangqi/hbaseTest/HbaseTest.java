@@ -18,53 +18,53 @@ import java.util.UUID;
 public class HbaseTest {
     public static void main(String[] args) {
 //		org.apache.hadoop.hbase.client.ConnectionManager
-//		test();
-        String tableName1 = "t_student1", tableName2 = "t_student_info1";
-        String[] columnFamily1 = {"st1", "st2"};
-        String[] columnFamily2 = {"stf1", "stf2"};
-        long startTime = System.currentTimeMillis();
-//        insterTest(tableName1, columnFamily1[0], "name", "lisi", 1000000L);
-//        insterTest(tableName1, columnFamily1[1], "age", "", 1000000L);
-        insterTest(tableName2, columnFamily2[0], "name", "lisi", 1000000L);
-        insterTest(tableName2, columnFamily2[1], "sex", "man", 1000000L);
-        long endTime = System.currentTimeMillis();
-        System.out.println("total插入数据共使用时间为：" + (endTime - startTime) + "毫秒");
+		test();
+//        String tableName1 = "t_student1", tableName2 = "t_student_info1";
+//        String[] columnFamily1 = {"st1", "st2"};
+//        String[] columnFamily2 = {"stf1", "stf2"};
+//        long startTime = System.currentTimeMillis();
+////        insterTest(tableName1, columnFamily1[0], "name", "lisi", 1000000L);
+////        insterTest(tableName1, columnFamily1[1], "age", "", 1000000L);
+//        insterTest(tableName2, columnFamily2[0], "name", "lisi", 1000000L);
+//        insterTest(tableName2, columnFamily2[1], "sex", "man", 1000000L);
+//        long endTime = System.currentTimeMillis();
+//        System.out.println("total插入数据共使用时间为：" + (endTime - startTime) + "毫秒");
     }
 
     /**
      * 一些测试
      */
     private static void test() {
-        String tableName1 = "t_student1", tableName2 = "t_student_info1";
-        String[] columnFamily1 = {"st1", "st2"};
+        String tableName1 = "user_location", tableName2 = "t_student_info1";
+        String[] columnFamily1 = {"sti", "stl", "std"};
         String[] columnFamily2 = {"stf1", "stf2"};
         HBaseUtil.creatTable(tableName1, columnFamily1);
-        HBaseUtil.creatTable(tableName2, columnFamily2);
+//        HBaseUtil.creatTable(tableName2, columnFamily2);
 
-        HBaseUtil.insert(tableName1, "1001", columnFamily1[0], "name", "zhangsan");
-        HBaseUtil.insert(tableName1, "1002", columnFamily1[0], "name", "lisi");
-        HBaseUtil.insert(tableName1, "1001", columnFamily1[1], "age", "18");
-        HBaseUtil.insert(tableName1, "1002", columnFamily1[1], "age", "20");
-
-        HBaseUtil.insert(tableName2, "1001", columnFamily2[0], "phone", "123456");
-        HBaseUtil.insert(tableName2, "1002", columnFamily2[0], "phone", "234567");
-        HBaseUtil.insert(tableName2, "1001", columnFamily2[1], "mail", "123@163.com");
-        HBaseUtil.insert(tableName2, "1002", columnFamily2[1], "mail", "234@163.com");
-        //查询该表所有数据
-        HBaseUtil.select(tableName1);
-        //根据表名和行健查询
-        HBaseUtil.select(tableName1, "1001");
-        //根据表名、行健和列族查询
-        HBaseUtil.select(tableName2, "1002", columnFamily2[0]);
-        //根据表名、行健、列族、和列查询
-        HBaseUtil.select(tableName2, "1002", columnFamily2[1], "mail");
-
-        //根据表名和行健查询
-        HBaseUtil.select(tableName1, "1002");
-        //删除数据
-        HBaseUtil.delete(tableName1, "1002", columnFamily1[0]);
-        //根据表名和行健查询
-        HBaseUtil.select(tableName1, "1002");
+//        HBaseUtil.insert(tableName1, "1001", columnFamily1[0], "userid", "zhangsan");
+//        HBaseUtil.insert(tableName1, "1002", columnFamily1[0], "name", "lisi");
+//        HBaseUtil.insert(tableName1, "1001", columnFamily1[1], "age", "18");
+//        HBaseUtil.insert(tableName1, "1002", columnFamily1[1], "age", "20");
+//
+//        HBaseUtil.insert(tableName2, "1001", columnFamily2[0], "phone", "123456");
+//        HBaseUtil.insert(tableName2, "1002", columnFamily2[0], "phone", "234567");
+//        HBaseUtil.insert(tableName2, "1001", columnFamily2[1], "mail", "123@163.com");
+//        HBaseUtil.insert(tableName2, "1002", columnFamily2[1], "mail", "234@163.com");
+//        //查询该表所有数据
+//        HBaseUtil.select(tableName1);
+//        //根据表名和行健查询
+//        HBaseUtil.select(tableName1, "1001");
+//        //根据表名、行健和列族查询
+//        HBaseUtil.select(tableName2, "1002", columnFamily2[0]);
+//        //根据表名、行健、列族、和列查询
+//        HBaseUtil.select(tableName2, "1002", columnFamily2[1], "mail");
+//
+//        //根据表名和行健查询
+//        HBaseUtil.select(tableName1, "1002");
+//        //删除数据
+//        HBaseUtil.delete(tableName1, "1002", columnFamily1[0]);
+//        //根据表名和行健查询
+//        HBaseUtil.select(tableName1, "1002");
 
     }
 
