@@ -20,15 +20,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.ReturnType;
 import org.springframework.data.redis.core.*;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +61,6 @@ public class RedisUtils {
      * 不设置过期时长
      */
     public final static long NOT_EXPIRE = -1;
-    private static final Long SUCCESS = 1L;
 
     private String getKeyName(String key) {
         return cacheName + ":S:" + key;
@@ -267,69 +261,4 @@ public class RedisUtils {
     }
     //list
 
-
-    private static final String LOCK_LUA_SCRIPT = "if redis.call('setNx',KEYS[1],ARGV[1]) then if redis.call('get',KEYS[1])==ARGV[1] then return redis.call('expire',KEYS[1],ARGV[2]) else return 0 end end";
-    /**
-     * 获取锁
-     *
-     * @param lockKey
-     * @param value
-     * @param expireTime：单位-秒
-     * @return
-     */
-    public boolean getLock(String lockKey, String value, int expireTime) {
-        boolean ret = false;
-        try {
-//            String script = "if redis.call('setNx',KEYS[1],ARGV[1]) then if redis.call('get',KEYS[1])==ARGV[1] then return redis.call('expire',KEYS[1],ARGV[2]) else return 0 end end";
-
-//            DefaultRedisScript<String> redisScript = new DefaultRedisScript<>(LOCK_LUA_SCRIPT, String.class);
-            DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
-//            redisScript.setScriptText("if (redis.call('exists', KEYS[1]) == 0) then redis.call('hset', KEYS[1],ARGV[1], 1); " +
-//                    "redis.call('pexpire', KEYS[1], ARGV[2]); return nil; end; " +
-//                    "if (redis.call('hexists', KEYS[1], ARGV[1]) == 1) then redis.call('hincrby', KEYS[1], ARGV[1], 1); " +
-//                    "redis.call('pexpire', KEYS[1], ARGV[2]); return nil; end; return redis.call('pttl', KEYS[1]);");
-            redisScript.setScriptText(LOCK_LUA_SCRIPT);
-            redisScript.setResultType(Long.class);
-
-            Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey),value,expireTime);
-
-            if(SUCCESS.equals(result)){
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
-
-    private static final String RELEASE_LOCK_LUA_SCRIPT = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-    /**
-     * 释放锁
-     *
-     * @param lockKey
-     * @param value
-     * @return
-     */
-    public boolean releaseLock(String lockKey, String value) {
-
-//        String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-
-//        RedisScript<String> redisScript = new DefaultRedisScript<>(RELEASE_LOCK_LUA_SCRIPT, String.class);
-        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
-//        redisScript.setScriptText("if (redis.call('exists', KEYS[1]) == 0) then return 0; end; " +
-//                "if (redis.call('hexists', KEYS[1], ARGV[1]) == 0) then return 0; end; " +
-//                "local counter = redis.call('hincrby', KEYS[1], ARGV[1], -1); " +
-//                "if (counter > 0) then return 1; " +
-//                "else " +
-//                "redis.call('del', KEYS[1]); return 1; end;");
-        redisScript.setScriptText(RELEASE_LOCK_LUA_SCRIPT);
-        redisScript.setResultType(Long.class);
-
-        Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey), value);
-        if (SUCCESS.equals(result)) {
-            return true;
-        }
-        return false;
-
-    }
 }

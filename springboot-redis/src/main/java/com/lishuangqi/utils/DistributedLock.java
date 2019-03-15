@@ -34,7 +34,7 @@ public class DistributedLock {
      * @return
      */
     public boolean getLock(String lockKey, String value, int expireTime) {
-//        lockKey = getKeyName(lockKey);
+        lockKey = getKeyName(lockKey);
         boolean ret = false;
         try {
             DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
@@ -65,7 +65,7 @@ public class DistributedLock {
      * @return
      */
     public boolean releaseLock(String lockKey, String value) {
-//        lockKey = getKeyName(lockKey);
+        lockKey = getKeyName(lockKey);
         DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
 //        redisScript.setScriptText("if (redis.call('exists', KEYS[1]) == 0) then return 0; end; " +
 //                "if (redis.call('hexists', KEYS[1], ARGV[1]) == 0) then return 0; end; " +

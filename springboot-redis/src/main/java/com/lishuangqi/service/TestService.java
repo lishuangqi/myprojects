@@ -14,8 +14,6 @@ import java.util.UUID;
 public class TestService {
     @Autowired
     DistributedLock lock;
-    @Autowired
-    RedisUtils redisUtils;
 
     int n = 50;
     private static final String LOCK_KEY = "lock_key1";
@@ -24,11 +22,11 @@ public class TestService {
         long starttime = System.currentTimeMillis();
         UUID uuid = UUID.randomUUID();
         // 返回锁的value值，供释放锁时候进行判断
-        boolean lock_key1 = redisUtils.getLock(LOCK_KEY, uuid.toString(), 10);
+        boolean lock_key1 = lock.getLock(LOCK_KEY, uuid.toString(), 10);
         while (!lock_key1) {
             try {
                 Thread.sleep(1000);
-                lock_key1 = redisUtils.getLock(LOCK_KEY, uuid.toString(), 10);
+                lock_key1 = lock.getLock(LOCK_KEY, uuid.toString(), 10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -36,7 +34,7 @@ public class TestService {
 
         System.out.println(Thread.currentThread().getName() + "获得了锁");
         System.out.println(--n);
-        redisUtils.releaseLock(LOCK_KEY, uuid.toString());
+        lock.releaseLock(LOCK_KEY, uuid.toString());
         long endtime = System.currentTimeMillis();
         System.out.println((endtime -starttime)/1000 +"s 执行时间");
     }

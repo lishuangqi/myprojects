@@ -1,6 +1,7 @@
 package com.lishuangqi;
 
 import com.lishuangqi.service.TestService;
+import com.lishuangqi.utils.DistributedLock;
 import com.lishuangqi.utils.RedisUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,8 @@ import java.util.concurrent.Executors;
 public class SpringbootRedisApplicationTests {
     @Autowired
     RedisUtils redisUtils;
+    @Autowired
+    DistributedLock distributedLock;
 	@Autowired
 	TestService testService;
 
@@ -30,9 +33,9 @@ public class SpringbootRedisApplicationTests {
     public void setRedisLock() {
         UUID uuid = UUID.randomUUID();
 //		redisUtils.set("test", "test");
-        boolean lock = redisUtils.getLock(LOCK_KEY, uuid.toString(), 10);
+        boolean lock = distributedLock.getLock(LOCK_KEY, uuid.toString(), 10);
         System.out.println(lock);
-        boolean lock1 = redisUtils.releaseLock(LOCK_KEY, uuid.toString());
+        boolean lock1 = distributedLock.releaseLock(LOCK_KEY, uuid.toString());
         System.out.println(lock1);
     }
 
