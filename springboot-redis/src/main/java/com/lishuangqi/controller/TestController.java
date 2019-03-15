@@ -35,6 +35,18 @@ public class TestController {
         return " Result is " + 1;
     }
 
+
+    @RequestMapping(value = "/testLock" ,method = RequestMethod.GET)
+    public String testLock(String id) {
+        ExecutorService newCachedThreadPool = Executors.newFixedThreadPool(50);
+
+        for (int i = 0; i < 50; i++) {
+            ThreadB threadB = new ThreadB(testService, id);
+            newCachedThreadPool.execute(threadB);
+        }
+        return " Result is " + 1;
+    }
+
     public class ThreadA extends Thread {
         private TestService service;
 
@@ -45,6 +57,21 @@ public class TestController {
         @Override
         public void run() {
             service.seckill();
+        }
+    }
+
+    public class ThreadB extends Thread {
+        private TestService service;
+        private String id;
+
+        public ThreadB(TestService service, String id) {
+            this.service = service;
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            service.testLock(id);
         }
     }
 }
