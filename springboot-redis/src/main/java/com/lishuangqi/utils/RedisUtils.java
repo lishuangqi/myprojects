@@ -66,7 +66,7 @@ public class RedisUtils {
      * 不设置过期时长
      */
     public final static long NOT_EXPIRE = -1;
-    private static final Integer SUCCESS = 1;
+    private static final Long SUCCESS = 1L;
 
     private String getKeyName(String key) {
         return cacheName + ":S:" + key;
@@ -282,7 +282,14 @@ public class RedisUtils {
         try {
 //            String script = "if redis.call('setNx',KEYS[1],ARGV[1]) then if redis.call('get',KEYS[1])==ARGV[1] then return redis.call('expire',KEYS[1],ARGV[2]) else return 0 end end";
 
-            DefaultRedisScript<String> redisScript = new DefaultRedisScript<>(LOCK_LUA_SCRIPT, String.class);
+//            DefaultRedisScript<String> redisScript = new DefaultRedisScript<>(LOCK_LUA_SCRIPT, String.class);
+            DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+//            redisScript.setScriptText("if (redis.call('exists', KEYS[1]) == 0) then redis.call('hset', KEYS[1],ARGV[1], 1); " +
+//                    "redis.call('pexpire', KEYS[1], ARGV[2]); return nil; end; " +
+//                    "if (redis.call('hexists', KEYS[1], ARGV[1]) == 1) then redis.call('hincrby', KEYS[1], ARGV[1], 1); " +
+//                    "redis.call('pexpire', KEYS[1], ARGV[2]); return nil; end; return redis.call('pttl', KEYS[1]);");
+            redisScript.setScriptText(LOCK_LUA_SCRIPT);
+            redisScript.setResultType(Long.class);
 
             Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey),value,expireTime);
 
@@ -307,7 +314,16 @@ public class RedisUtils {
 
 //        String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
-        RedisScript<String> redisScript = new DefaultRedisScript<>(RELEASE_LOCK_LUA_SCRIPT, String.class);
+//        RedisScript<String> redisScript = new DefaultRedisScript<>(RELEASE_LOCK_LUA_SCRIPT, String.class);
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+//        redisScript.setScriptText("if (redis.call('exists', KEYS[1]) == 0) then return 0; end; " +
+//                "if (redis.call('hexists', KEYS[1], ARGV[1]) == 0) then return 0; end; " +
+//                "local counter = redis.call('hincrby', KEYS[1], ARGV[1], -1); " +
+//                "if (counter > 0) then return 1; " +
+//                "else " +
+//                "redis.call('del', KEYS[1]); return 1; end;");
+        redisScript.setScriptText(RELEASE_LOCK_LUA_SCRIPT);
+        redisScript.setResultType(Long.class);
 
         Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey), value);
         if (SUCCESS.equals(result)) {
