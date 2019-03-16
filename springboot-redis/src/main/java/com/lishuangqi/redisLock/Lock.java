@@ -1,4 +1,4 @@
-package com.lishuangqi.lock;
+package com.lishuangqi.redisLock;
 
 import java.lang.annotation.*;
 

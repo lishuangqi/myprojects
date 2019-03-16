@@ -1,7 +1,7 @@
 package com.lishuangqi.service;
 
-import com.lishuangqi.lock.Lock;
-import com.lishuangqi.lock.LockKey;
+import com.lishuangqi.redisLock.Lock;
+import com.lishuangqi.redisLock.LockKey;
 import com.lishuangqi.utils.DistributedLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
