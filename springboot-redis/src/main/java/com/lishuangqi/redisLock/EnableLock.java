@@ -6,11 +6,11 @@ import java.lang.annotation.*;
 
 /**
  /**
- * @author shitiecheng
+ * @author lishuangqi
  * @version v1
  * @summary 分布式锁管理
- * @Copyright (c) 2017, Lianjia Group All Rights Reserved.
- * @since 2018/6/10
+ * @Copyright
+ * @since 2019/3/16
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

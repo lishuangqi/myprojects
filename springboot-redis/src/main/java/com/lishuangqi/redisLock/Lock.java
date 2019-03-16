@@ -3,11 +3,11 @@ package com.lishuangqi.redisLock;
 import java.lang.annotation.*;
 
 /**
- * @author shitiecheng
+ * @author lishuangqi
  * @version v1
  * @summary 方法分布式锁
- * @Copyright (c) 2017, Lianjia Group All Rights Reserved.
- * @since 2018/6/10
+ * @Copyright
+ * @since 2019/3/16
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

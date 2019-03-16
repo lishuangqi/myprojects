@@ -3,11 +3,11 @@ package com.lishuangqi.redisLock;
 import java.lang.annotation.*;
 
 /**
- * @author shitiecheng
+ * @author lishuangqi
  * @version v1
  * @summary 被注解参数会作为分布式锁的key的一部分 支持多个参数
- * @Copyright (c) 2017, Lianjia Group All Rights Reserved.
- * @since 2018/6/10
+ * @Copyright
+ * @since 2019/3/16
  */
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)

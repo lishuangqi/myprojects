@@ -29,10 +29,10 @@ import java.util.*;
  * 如果服务器返回 OK ，那么这个客户端获得锁。
  * 如果服务器返回 NIL ，那么客户端获取锁失败，可以在稍后再重试。
  *
- * @author liuxing
+ * @author lishuangq
  * @summary RedisLock
- * @Copyright (c) 2018, Lianjia Group All Rights Reserved.
- * @since 2018-02-09 15:37
+ * @Copyright
+ * @since 2019/3/16
  */
 public class RedisLock {
 
