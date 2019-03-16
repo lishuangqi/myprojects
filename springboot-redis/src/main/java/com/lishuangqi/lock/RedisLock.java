@@ -1,21 +1,11 @@
 package com.lishuangqi.lock;
 
-import io.lettuce.core.api.async.RedisAsyncCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Redis分布式锁
@@ -79,6 +69,11 @@ public class RedisLock {
      * 解锁的lua脚本
      */
     public static final String UNLOCK_LUA;
+    private static final Long SUCCESS = 1L;
+
+    private static final String LOCK_LUA_SCRIPT = "if redis.call('setNx',KEYS[1],ARGV[1]) then if redis.call('get',KEYS[1])==ARGV[1] then return redis.call('expire',KEYS[1],ARGV[2]) else return 0 end end";
+    private static final String RELEASE_LOCK_LUA_SCRIPT = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+
 
     static {
         StringBuilder sb = new StringBuilder();
@@ -195,7 +190,7 @@ public class RedisLock {
         // 系统当前时间，纳秒
         long nowTime = System.nanoTime();
         while ((System.nanoTime() - nowTime) < _timeout) {
-            if (OK.equalsIgnoreCase(this.set(lockKey, lockValue, expireTime))) {
+            if (this.getLock(lockKey, lockValue, expireTime)) {
                 locked = true;
                 // 上锁成功结束请求
                 return true;
@@ -214,9 +209,20 @@ public class RedisLock {
      */
     public boolean lock() {
         lockValue = UUID.randomUUID().toString();
-        //不存在则添加 且设置过期时间（单位ms）
-        String result = set(lockKey, lockValue, expireTime);
-        locked = OK.equalsIgnoreCase(result);
+//        //不存在则添加 且设置过期时间（单位ms）
+//        String result = set(lockKey, lockValue, expireTime);
+//        locked = OK.equalsIgnoreCase(result);
+//        return locked;
+        try {
+            DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+            redisScript.setScriptText(LOCK_LUA_SCRIPT);
+            redisScript.setResultType(Long.class);
+
+            Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey),lockValue,expireTime);
+            locked = SUCCESS.equals(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return locked;
     }
 
@@ -229,10 +235,22 @@ public class RedisLock {
         lockValue = UUID.randomUUID().toString();
         while (true) {
             //不存在则添加 且设置过期时间（单位ms）
-            String result = set(lockKey, lockValue, expireTime);
-            if (OK.equalsIgnoreCase(result)) {
-                locked = true;
-                return true;
+//            String result = set(lockKey, lockValue, expireTime);
+//            if (OK.equalsIgnoreCase(result)) {
+//                locked = true;
+//                return true;
+//            }
+            try {
+                DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+                redisScript.setScriptText(LOCK_LUA_SCRIPT);
+                redisScript.setResultType(Long.class);
+                Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey),lockValue,expireTime);
+                if(SUCCESS.equals(result)){
+                    locked = true;
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             // 每次请求等待一段时间
@@ -252,39 +270,50 @@ public class RedisLock {
     public boolean unlock() {
         // 只有加锁成功并且锁还有效才去释放锁
         // 只有加锁成功并且锁还有效才去释放锁
+//        if (locked) {
+//            return (boolean) redisTemplate.execute(new RedisCallback<Boolean>() {
+//                @Override
+//                public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+//                    Object nativeConnection = connection.getNativeConnection();
+//                    Long result = 0L;
+//
+//                    List<String> keys = new ArrayList<>();
+//                    keys.add(lockKey);
+//                    List<String> values = new ArrayList<>();
+//                    values.add(lockValue);
+//
+//                    // 集群模式
+//                    if (nativeConnection instanceof JedisCluster) {
+//                        result = (Long) ((JedisCluster) nativeConnection).eval(UNLOCK_LUA, keys, values);
+//                    }
+//                    // 单机模式
+//                    else if (nativeConnection instanceof Jedis) {
+//                        result = (Long) ((Jedis) nativeConnection).eval(UNLOCK_LUA, keys, values);
+//                    }
+//
+//                    if (result == 0) {
+//                        LOGGER.info("Redis分布式锁，解锁{}失败！解锁时间：{}", lockKey, System.currentTimeMillis());
+//                    }
+//
+//                    locked = (result == 0);
+//
+//                    return result == 1;
+//                }
+//            });
+//        }
+//
+//        return true;
         if (locked) {
-            return (boolean) redisTemplate.execute(new RedisCallback<Boolean>() {
-                @Override
-                public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
-                    Object nativeConnection = connection.getNativeConnection();
-                    Long result = 0L;
+            DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+            redisScript.setScriptText(RELEASE_LOCK_LUA_SCRIPT);
+            redisScript.setResultType(Long.class);
 
-                    List<String> keys = new ArrayList<>();
-                    keys.add(lockKey);
-                    List<String> values = new ArrayList<>();
-                    values.add(lockValue);
-
-                    // 集群模式
-                    if (nativeConnection instanceof JedisCluster) {
-                        result = (Long) ((JedisCluster) nativeConnection).eval(UNLOCK_LUA, keys, values);
-                    }
-                    // 单机模式
-                    else if (nativeConnection instanceof Jedis) {
-                        result = (Long) ((Jedis) nativeConnection).eval(UNLOCK_LUA, keys, values);
-                    }
-
-                    if (result == 0) {
-                        LOGGER.info("Redis分布式锁，解锁{}失败！解锁时间：{}", lockKey, System.currentTimeMillis());
-                    }
-
-                    locked = (result == 0);
-
-                    return result == 1;
-                }
-            });
+            Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey), lockValue);
+            if (SUCCESS.equals(result)) {
+                return true;
+            }
         }
-
-        return true;
+        return false;
     }
 
     /**
@@ -302,31 +331,31 @@ public class RedisLock {
      * @param seconds 过去时间（秒）
      * @return
      */
-    private String set(final String key, final String value, final long seconds) {
-        Assert.isTrue(!StringUtils.isEmpty(key), "key不能为空");
-
-        return (String) redisTemplate.execute(new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                Object nativeConnection = connection.getNativeConnection();
-                String result = null;
-                // 集群模式
-                if (nativeConnection instanceof JedisCluster) {
-                    result = ((JedisCluster) nativeConnection).set(key, value, NX, EX, seconds);
-                }
-                // 单机模式
-                else if (nativeConnection instanceof Jedis) {
-                    result = ((Jedis) nativeConnection).set(key, value, NX, EX, seconds);
-                }
-
-                if (!StringUtils.isEmpty(result)) {
-                    LOGGER.info("获取锁{}的时间：{}", lockKey, System.currentTimeMillis());
-                }
-
-                return result;
-            }
-        });
-    }
+//    private String set(final String key, final String value, final long seconds) {
+//        Assert.isTrue(!StringUtils.isEmpty(key), "key不能为空");
+//
+//        return (String) redisTemplate.execute(new RedisCallback<String>() {
+//            @Override
+//            public String doInRedis(RedisConnection connection) throws DataAccessException {
+//                Object nativeConnection = connection.getNativeConnection();
+//                String result = null;
+//                // 集群模式
+//                if (nativeConnection instanceof JedisCluster) {
+//                    result = ((JedisCluster) nativeConnection).set(key, value, NX, EX, seconds);
+//                }
+//                // 单机模式
+//                else if (nativeConnection instanceof Jedis) {
+//                    result = ((Jedis) nativeConnection).set(key, value, NX, EX, seconds);
+//                }
+//
+//                if (!StringUtils.isEmpty(result)) {
+//                    LOGGER.info("获取锁{}的时间：{}", lockKey, System.currentTimeMillis());
+//                }
+//
+//                return result;
+//            }
+//        });
+//    }
 
     /**
             * 线程等待时间
@@ -354,4 +383,55 @@ public class RedisLock {
 //            redisLock.unlock();
 //        }
 //    }
+
+
+
+    /**
+     * 获取锁
+     *
+     * @param lockKey
+     * @param value
+     * @param expireTime：单位-秒
+     * @return
+     */
+    public boolean getLock(String lockKey, String value, int expireTime) {
+        boolean ret = false;
+        try {
+            DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+            redisScript.setScriptText(LOCK_LUA_SCRIPT);
+            redisScript.setResultType(Long.class);
+
+            Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey),value,expireTime);
+
+            if(SUCCESS.equals(result)){
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+
+    /**
+     * 释放锁
+     *
+     * @param lockKey
+     * @param value
+     * @return
+     */
+    public boolean releaseLock(String lockKey, String value) {
+        if (locked) {
+            DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+            redisScript.setScriptText(RELEASE_LOCK_LUA_SCRIPT);
+            redisScript.setResultType(Long.class);
+
+            Object result = redisTemplate.execute(redisScript, Collections.singletonList(lockKey), value);
+            if (SUCCESS.equals(result)) {
+                return true;
+            }
+        }
+        return false;
+
+    }
 }

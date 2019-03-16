@@ -68,7 +68,7 @@ public class LockManager {
         Object result = null;
         try {
             // 获得锁
-            if (redisLock.lock()) {
+            if (redisLock.lockBlock()) {
                 try {
                     result = pjp.proceed();
                 } catch (Exception e) {

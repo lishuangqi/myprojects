@@ -31,7 +31,7 @@ public class TestService {
         // 返回锁的value值，供释放锁时候进行判断
         boolean lock_key1 = lock.getLock(LOCK_KEY, uuid.toString(), 10);
         while (!lock_key1) {
-            sleep(1000, 50000);
+            sleep(10, 50000);
             lock_key1 = lock.getLock(LOCK_KEY, uuid.toString(), 10);
         }
 
@@ -39,16 +39,24 @@ public class TestService {
         System.out.println(--n);
         lock.releaseLock(LOCK_KEY, uuid.toString());
         long endtime = System.currentTimeMillis();
-        System.out.println((endtime -starttime)/1000 +"s 执行时间");
+        System.out.println((endtime -starttime) +"ms 执行时间");
     }
 
-    @Lock(lockTime = 10000)
+    @Lock(lockTime = 30)
     public void testLock(@LockKey String id) {
         long starttime = System.currentTimeMillis();
         System.out.println(Thread.currentThread().getName() + "获得了锁");
         System.out.println(--n);
         long endtime = System.currentTimeMillis();
-        System.out.println((endtime -starttime)/1000 +"s 执行时间");
+        System.out.println((endtime -starttime) +"ms 执行时间");
+    }
+
+    public void testNoLock(String id) {
+        long starttime = System.currentTimeMillis();
+        System.out.println(Thread.currentThread().getName() + "获得了锁");
+        System.out.println(--n);
+        long endtime = System.currentTimeMillis();
+        System.out.println((endtime -starttime) +"ms 执行时间");
     }
 
     /**

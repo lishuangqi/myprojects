@@ -5,7 +5,6 @@ import com.lishuangqi.utils.DistributedLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.ExecutorService;
@@ -21,16 +20,16 @@ public class TestController {
     @Autowired
     TestService testService;
 
-    @RequestMapping(value = "/add" ,method = RequestMethod.GET)
-    public String add() {
-        ExecutorService newCachedThreadPool = Executors.newFixedThreadPool(50);
+    @RequestMapping(value = "/lock" ,method = RequestMethod.GET)
+    public String lock() {
+        ExecutorService executorService = Executors.newFixedThreadPool(50);
 
         for (int i = 0; i < 50; i++) {
 //            TestService testService = new TestService();
             ThreadA threadA = new ThreadA(testService);
 //			threadA.start();
 
-            newCachedThreadPool.execute(threadA);
+            executorService.execute(threadA);
         }
         return " Result is " + 1;
     }
@@ -38,11 +37,24 @@ public class TestController {
 
     @RequestMapping(value = "/testLock" ,method = RequestMethod.GET)
     public String testLock(String id) {
-        ExecutorService newCachedThreadPool = Executors.newFixedThreadPool(50);
+        ExecutorService executorService = Executors.newFixedThreadPool(50);
 
         for (int i = 0; i < 50; i++) {
             ThreadB threadB = new ThreadB(testService, id);
-            newCachedThreadPool.execute(threadB);
+            executorService.execute(threadB);
+        }
+        return " Result is " + 1;
+    }
+
+    @RequestMapping(value = "/testNoLock" ,method = RequestMethod.GET)
+    public String testNoLock(String id) {
+        ExecutorService executorService = Executors.newFixedThreadPool(50);
+//        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(50,
+//                new BasicThreadFactory.Builder().namingPattern("example-schedule-pool-%d").daemon(true).build());
+
+        for (int i = 0; i < 50; i++) {
+            ThreadC threadC = new ThreadC(testService, id);
+            executorService.execute(threadC);
         }
         return " Result is " + 1;
     }
@@ -72,6 +84,21 @@ public class TestController {
         @Override
         public void run() {
             service.testLock(id);
+        }
+    }
+
+    public class ThreadC extends Thread {
+        private TestService service;
+        private String id;
+
+        public ThreadC(TestService service, String id) {
+            this.service = service;
+            this.id = id;
+        }
+
+        @Override
+        public void run() {
+            service.testNoLock(id);
         }
     }
 }
