@@ -16,7 +16,7 @@
 ![使用示例](https://images.gitee.com/uploads/images/2018/0707/103713_96df9dc4_119335.png "Snip20180707_2.png")
 
 #### Contribution
-lishuangq
+lishuangqi
 
 
 一个应用于springboot项目的，基于redis的缓存标签注入功能
