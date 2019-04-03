@@ -39,4 +39,9 @@ public @interface RedisCache {
      * @return
      */
     boolean isCache() default true;
+    /**
+     * 强制重新缓存
+     * @return
+     */
+    boolean isForceCache() default false;
 }

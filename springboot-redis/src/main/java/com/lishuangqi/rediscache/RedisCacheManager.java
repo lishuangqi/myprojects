@@ -48,7 +48,7 @@ public class RedisCacheManager {
         //缓存的key
         StringBuilder redisKey = new StringBuilder("redisKey:" + keyPrix);
         Object result = redisUtil.get(redisKey.toString());
-        if(result == null){
+        if(redisCache.isForceCache() || (redisCache.isCache() && result == null)){
             result = pjp.proceed();
             //获取加注解的方法参数的值
             Annotation[][] parameterAnnotations = m.getParameterAnnotations();
@@ -67,6 +67,8 @@ public class RedisCacheManager {
                 }
             }
             redisUtil.set(redisKey.toString(), result, redisCache.cacheTime()+ran.nextInt(10) );
+        } else if(!redisCache.isCache()){
+            result = pjp.proceed();
         }
         return result;
     }

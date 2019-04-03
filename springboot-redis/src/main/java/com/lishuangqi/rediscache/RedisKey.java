@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  * @Copyright
  * @since 2019/3/16
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface RedisKey {
