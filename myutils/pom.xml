@@ -17,7 +17,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
+        <java.source.version>1.8</java.source.version>
+        <java.target.version>1.8</java.target.version>
         <!-- spring版本号 -->
         <spring.version>4.3.9.RELEASE</spring.version>
 
@@ -152,7 +153,10 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpasyncclient</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

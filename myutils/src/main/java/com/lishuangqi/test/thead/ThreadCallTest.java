@@ -8,7 +8,7 @@ import java.util.concurrent.*;
 public class ThreadCallTest {
     public static void main(String[] args) {
         ExecutorService exe = Executors.newCachedThreadPool();
-        Task task = new Task();
+        TaskCallable task = new TaskCallable();
 
         Future<Integer> result = exe.submit(task);
         exe.shutdown();
@@ -25,7 +25,7 @@ public class ThreadCallTest {
 
     }
 
-    static class Task implements Callable<Integer> {
+    static class TaskCallable implements Callable<Integer> {
 
         @Override
         public Integer call() throws Exception {
