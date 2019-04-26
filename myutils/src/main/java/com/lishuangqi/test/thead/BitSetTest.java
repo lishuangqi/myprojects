@@ -5,7 +5,7 @@ import java.util.BitSet;
 /**
  * Created by michael on 2019/4/17.
  */
-public class RunnableTest implements Runnable{
+public class BitSetTest implements Runnable{
 
     @Override
     public void run() {
