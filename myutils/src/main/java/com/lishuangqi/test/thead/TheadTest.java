@@ -1,8 +1,6 @@
 package com.lishuangqi.test.thead;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -39,6 +37,8 @@ public class TheadTest extends Thread{
         }
     }
 
+    private static ExecutorService executorService1 = Executors.newFixedThreadPool(30);
+
     public static void main(String[] args) {
         CountDownLatch countDownLatch = new CountDownLatch(100);
 //        TheadTest tt= new TheadTest(countDownLatch);
@@ -46,11 +46,37 @@ public class TheadTest extends Thread{
 //        TheadTest tt1= new TheadTest(countDownLatch);
 //        tt1.start();
         ExecutorService executorService = Executors.newFixedThreadPool(30);
+
         for(int i =0; i < 100; i++) {
 //            executorService.execute(new TheadTest(countDownLatch));
-            executorService.execute(new TestFuture());
+            executorService.execute(()->{
+                scenetTask();
+            });
         }
+        executorService.shutdown();
 //        tt.interrupt();
 //        tt.testLock("aaa");
+        System.out.println("11112");
+    }
+
+    private static void scenetTask() {
+        Future<Boolean> future = executorService1.submit(() -> {
+            int temp=1+(int)(Math.random()*(5));
+            Thread.sleep(temp*1000);
+            return true;
+
+        });
+        try {
+            if (future.get(2, TimeUnit.SECONDS)) {
+                System.out.println("任务执行成功");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            System.out.println("执行超时");
+            future.cancel(true);
+        }
     }
 }
