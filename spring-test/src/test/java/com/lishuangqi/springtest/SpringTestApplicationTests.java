@@ -34,10 +34,9 @@ public class SpringTestApplicationTests {
 
     @Test
     public void javaProxyTest(){
-        JavaProxyInterface javaProxyInterface = new ConcreateClasss();
         JavaProxyInterface newJavaProxyInterface = (JavaProxyInterface) Proxy.newProxyInstance(SpringTestApplicationTests.class.getClassLoader(),
                 new Class[]{JavaProxyInterface.class},
-                new MyInvocationHanlder(javaProxyInterface));
+                new MyInvocationHanlder(ConcreateClasss.class));
 
         newJavaProxyInterface.gotoSchool();
         newJavaProxyInterface.gotoWork();
@@ -47,9 +46,8 @@ public class SpringTestApplicationTests {
 
     @Test
     public void cglibProxyTest(){
-        CglibClass cglibClass= new CglibClass();
         Enhancer enhancer = new Enhancer();
-        Callback s = new MthdInvoker(cglibClass);
+        Callback s = new MthdInvoker(CglibClass.class);
         enhancer.setSuperclass(CglibClass.class);
         Callback callbacks[] = new Callback[]{s};
         enhancer.setCallbacks(callbacks);

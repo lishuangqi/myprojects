@@ -5,9 +5,9 @@ import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
 
-public class MthdInvoker<T> implements MethodInterceptor {
-    T cglibProxy;
-    public MthdInvoker(T cglibProxy){
+public class MthdInvoker implements MethodInterceptor {
+    Class cglibProxy;
+    public MthdInvoker(Class cglibProxy){
         this.cglibProxy =  cglibProxy;
     }
 
@@ -17,6 +17,6 @@ public class MthdInvoker<T> implements MethodInterceptor {
     @Override
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
         beforeMethod();
-        return method.invoke(cglibProxy, args);
+        return method.invoke(cglibProxy.newInstance(), args);
     }
 }
