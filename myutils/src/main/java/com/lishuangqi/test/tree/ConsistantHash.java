@@ -1,4 +1,4 @@
-package com.lishuangqi.test.thead;
+package com.lishuangqi.test.tree;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
