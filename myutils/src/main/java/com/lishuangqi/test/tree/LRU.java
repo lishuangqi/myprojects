@@ -8,6 +8,7 @@ package com.lishuangqi.test.tree;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class LRU<K,V> {
     private LinkedHashMap<K, V> map;
@@ -49,7 +50,7 @@ public class LRU<K,V> {
     }
 
     public static void main(String[] args) {
-        LRU<String, Integer> LRUMap = new LRU<>(4);
+        LRU<String, Integer> LRUMap = new LRU<>(3);
         LRUMap.put("key1", 1);
         LRUMap.put("key2", 2);
         LRUMap.put("key3", 3);
@@ -57,8 +58,22 @@ public class LRU<K,V> {
         System.out.println();
         LRUMap.get("key1");
         LRUMap.put("key4", 4);
+        LRUMap.put("key4", 5);
         LRUMap.print();
         LRUMap.get("key1");
         LRUMap.print();
+
+        LinkedHashMap linkedHashMap = new LinkedHashMap();
+        linkedHashMap.put("a", 1);
+        linkedHashMap.put("b", 2);
+        linkedHashMap.put("c", 3);
+        System.out.println(linkedHashMap.get("a"));
+        TreeMap treeMap = new TreeMap();
+        treeMap.put("b", "b");
+        treeMap.put("a", "a");
+        treeMap.put("c", "c");
+        treeMap.put("1", "1");
+        System.out.println(treeMap.firstEntry());
+        System.out.println(treeMap.lastEntry());
     }
 }

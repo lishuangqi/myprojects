@@ -2,16 +2,12 @@ package com.lishuangqi.test.tree;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ConsistantHash {
 
     //圆环  用treemap的主要原因是可以排序
     private TreeMap<Long, Node> circle = new TreeMap<Long, Node>();
-
     //真实结点
     private List<Node> realNodes = new ArrayList<Node>();
 

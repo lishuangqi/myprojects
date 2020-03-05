@@ -25,19 +25,19 @@ public class Demo  implements Runnable{
 	private static final Logger LOGGER = LoggerFactory.getLogger(Demo.class);
 
     public static final byte RESULT_SUCC = 0;
-    public static final byte RESULT_SUCC_AND_DATA = 1;  //³É¹¦²¢ÇÒÓĞÊı¾İ·µ»Ø
+    public static final byte RESULT_SUCC_AND_DATA = 1;  //æˆåŠŸå¹¶ä¸”æœ‰æ•°æ®è¿”å›
     public static final byte RESULT_FAIL = -1;
    
     private byte BTCOUNT_MAX = 5;
     
-    public static DisSystemWebServiceStub disStub;   //µ÷¶ÈÏµÍ³½Ó¿Ú
-    public static DemoCallback democallback;   //µ÷¶ÈÏµÍ³»Øµ÷½Ó¿Ú
+    public static DisSystemWebServiceStub disStub;   //è°ƒåº¦ç³»ç»Ÿæ¥å£
+    public static DemoCallback democallback;   //è°ƒåº¦ç³»ç»Ÿå›è°ƒæ¥å£
 
     
     private boolean runflag = false;
     private Thread thr;
-    private long hbInterval = 1000*10;//ĞÄÌøÊ±¼äÎª10Ãë
-    private byte resendCount = 0; //ÖØ·¢´ÎÊı´óÓÚ×î´óÖµµÇ³ö£¬²¢Í£Ö¹ĞÄÌøÏß³Ì
+    private long hbInterval = 1000*10;//å¿ƒè·³æ—¶é—´ä¸º10ç§’
+    private byte resendCount = 0; //é‡å‘æ¬¡æ•°å¤§äºæœ€å¤§å€¼ç™»å‡ºï¼Œå¹¶åœæ­¢å¿ƒè·³çº¿ç¨‹
   
     private UnsignedShort disCenterNo;
     private UnsignedShort dispatcherNo;
@@ -77,7 +77,7 @@ public class Demo  implements Runnable{
     public void disLogin(){
         try {
             DisSystemWebServiceStub.Data_callnum centerno = new  DisSystemWebServiceStub.Data_callnum();
-            centerno.setData_callnum("6666");//µ÷¶ÈÖĞĞÄºÅ
+            centerno.setData_callnum("6666");//è°ƒåº¦ä¸­å¿ƒå·
                       
             org.apache.axis2.databinding.types.UnsignedByte lmode = new org.apache.axis2.databinding.types.UnsignedByte();
             lmode.setValue(0);
@@ -110,7 +110,7 @@ public class Demo  implements Runnable{
                 }
                 
                 thr = new Thread(this);
-                thr.start(); //Æô¶¯ĞÄÌø
+                thr.start(); //å¯åŠ¨å¿ƒè·³
                 
             }else{
                 LOGGER.error("disLogin fail,returnflag="+response.getReturnflag().getValue());
@@ -155,7 +155,7 @@ public class Demo  implements Runnable{
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            LOGGER.debug("disHeartBeat exception£ºsessonId="+sessonId+" dispatcherNo="+dispatcherNo); 
+            LOGGER.debug("disHeartBeat exceptionï¼šsessonId="+sessonId+" dispatcherNo="+dispatcherNo); 
             resendCount++;
             if(resendCount>=BTCOUNT_MAX){
                 resendCount = 0;
@@ -169,7 +169,7 @@ public class Demo  implements Runnable{
     
     /** 
     * @Title: stopService 
-    * @Description: TODO Í£Ö¹½ø³Ì£¬²¢³õÊ¼»¯×ÊÔ´
+    * @Description: TODO åœæ­¢è¿›ç¨‹ï¼Œå¹¶åˆå§‹åŒ–èµ„æº
     * @param     
     * @return void
     * @throws 
@@ -181,7 +181,7 @@ public class Demo  implements Runnable{
         try{
             if(null != thr && thr.isAlive()){
                 thr.stop();
-                cancel();//Í£Ö¹ĞÄÌøÏß³Ì
+                cancel();//åœæ­¢å¿ƒè·³çº¿ç¨‹
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -194,7 +194,7 @@ public class Demo  implements Runnable{
         long waittime = 0;
         while(runflag){
             if(waittime>=hbInterval){
-            	this.disHeartBeat(); //¸øµ÷¶ÈÏµÍ³·¢ĞÄÌø
+            	this.disHeartBeat(); //ç»™è°ƒåº¦ç³»ç»Ÿå‘å¿ƒè·³
             	this.queryConflist();
                 waittime = 0;
             }
@@ -233,11 +233,11 @@ public class Demo  implements Runnable{
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            LOGGER.debug("disLogout exception£ºsessonId="+sessonId+" dispatcherNo="+dispatcherNo); 
+            LOGGER.debug("disLogout exceptionï¼šsessonId="+sessonId+" dispatcherNo="+dispatcherNo); 
         }
     }
 
-    /********************************´´½¨»á³¡£¬Òì²½*************************************/
+    /********************************åˆ›å»ºä¼šåœºï¼Œå¼‚æ­¥*************************************/
   	@SuppressWarnings("unchecked")
     public void createConf(){	
 		try {
@@ -245,12 +245,12 @@ public class Demo  implements Runnable{
 		      
 		   createconfBean.setDispatcherno(dispatcherNo);
 		   createconfBean.setSessionid(sessonId);
-		   createconfBean.setConfname("ÄãºÃ");;
+		   createconfBean.setConfname("ä½ å¥½");;
 		   createconfBean.setHeadcount(new UnsignedShort(10));
 		   createconfBean.setVideoflag(new UnsignedByte(0));
 		   createconfBean.setVieweachpage(new UnsignedByte(4));
 		   
-		   LOGGER.debug("Òì²½µ÷ÓÃ£¡");   
+		   LOGGER.debug("å¼‚æ­¥è°ƒç”¨ï¼");   
 		   
 		   disStub.startdisCreateConf(createconfBean, democallback); 
        }catch (RemoteException e) {
@@ -262,7 +262,7 @@ public class Demo  implements Runnable{
        }
     }
 
-    /********************************²éÑ¯Àà*************************************/
+    /********************************æŸ¥è¯¢ç±»*************************************/
   	@SuppressWarnings("unchecked")
     public void queryConflist(){	
 		try {
