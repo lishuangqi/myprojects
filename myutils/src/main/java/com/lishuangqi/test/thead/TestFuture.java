@@ -67,6 +67,8 @@ public class TestFuture extends Thread {
                 future2.cancel(true);
             }
             e.printStackTrace();
+        }finally {
+            executor.shutdown();
         }
     }
 
