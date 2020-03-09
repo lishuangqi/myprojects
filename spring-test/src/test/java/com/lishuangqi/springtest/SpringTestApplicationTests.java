@@ -31,7 +31,12 @@ public class SpringTestApplicationTests {
         System.out.println("myBean1.equals(myBean3) = "+ myBean1.equals(myBean3));
         System.out.println("myBean2.equals(myBean3) = "+ myBean2.equals(myBean3));
     }
-
+    @Test
+    public void testInitBean(){
+        TestInitBean testInitBean = (TestInitBean) context.getBean("testInitBean");
+        System.out.println(testInitBean.getA());
+        System.out.println(testInitBean.getB());
+    }
     @Test
     public void javaProxyTest(){
         JavaProxyInterface newJavaProxyInterface = (JavaProxyInterface) Proxy.newProxyInstance(SpringTestApplicationTests.class.getClassLoader(),
