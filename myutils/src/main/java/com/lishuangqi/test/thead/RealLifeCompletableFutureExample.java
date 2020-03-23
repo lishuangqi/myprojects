@@ -2,6 +2,7 @@ package com.lishuangqi.test.thead;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
@@ -68,6 +69,8 @@ public class RealLifeCompletableFutureExample {
     }
 
     private static void simulateDelay() throws InterruptedException {
-        Thread.sleep(5000);
+        int time = new Random().nextInt(5) * 1000;
+        System.out.println(time);
+        Thread.sleep(time);
     }
 }
