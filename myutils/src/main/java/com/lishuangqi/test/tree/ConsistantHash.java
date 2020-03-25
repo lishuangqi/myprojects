@@ -36,6 +36,10 @@ public class ConsistantHash {
         Long nodeKey = md5(node.toString());
         System.out.println(node.toString() + " md5:" + nodeKey);
         circle.put(nodeKey, node);
+        for (int i =0 ; i<10; i++){
+            circle.put(md5(node.nodeNum+"虚拟节点："+i), node);
+        }
+
     }
 
     public void removeNode(Node node){
