@@ -36,6 +36,7 @@ public class BitSetTest implements Runnable{
         System.out.println(bitSet.get(1));
         System.out.println(bitSet.get(2));
         System.out.println(bitSet.get(3));
+        System.out.println(bitSet.toString());
 
         TreeMap<Integer,Object> treeMap = new TreeMap<Integer,Object>();
         long start1 = System.currentTimeMillis();
